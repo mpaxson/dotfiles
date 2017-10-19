@@ -1,0 +1,41 @@
+! Quantum
+! TO INSTALL:
+! Add this to your ~/.Xresources or import this
+! by adding: #include "path/to/this/file"
+
+! special
+*.foreground:   #a8bac7
+*.background:   #263238
+*.cursorColor:  #c7d3db
+
+! black
+*.color0:       #304047
+*.color8:       #4e6672
+
+! red
+*.color1:       #dd6880
+*.color9:       #de889a
+
+! green
+*.color2:       #83b879
+*.color10:      #99c490
+
+! yellow
+*.color3:       #dec790
+*.color11:      #e7d09a
+
+! blue
+*.color4:       #95b5e4
+*.color12:      #a0beea
+
+! purple
+*.color5:       #c1a3e0
+*.color13:      #cbacea
+
+! cyan
+*.color6:       #64c1d4
+*.color14:      #88d1df
+
+! white
+*.color7:       #abbdc6
+*.color15:      #c9d5db

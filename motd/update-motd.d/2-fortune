@@ -1,0 +1,7 @@
+#!/bin/sh
+COLUMNS=$(tput cols) 
+title=$(fortune|cowsay)
+cat << EOF
+`printf "%*s\n" $(((${#title}+$COLUMNS)/2)) "$title"`
+
+EOF
