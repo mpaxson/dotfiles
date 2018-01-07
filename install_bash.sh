@@ -2,10 +2,10 @@
 sh install_prereq_ubuntu.sh
 echo 'moving /etc/update-motd.d to /etc/update'
 sudo mv /etc/update-motd.d /etc/update-motd.d.backup
-s
+
 echo 'copying motd/update-motd.d to /etc/update-motd.d'
 sudo mkdir /etc/update-motd.d
-sudo cp -r  /motd/update-motd.d/* /etc/update-motd.d 
+sudo cp -r  motd/update-motd.d/* /etc/update-motd.d 
 
 echo 'moving ~/.bashrc to ~/.bashrc.backup\n...'
 mv ~/.bashrc ~/.bashrc.backup
