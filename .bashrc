@@ -3,7 +3,7 @@
 # see /usr/share/doc/bash/examples/startup-files (in the package bash-doc)
 # for examples
 # ANSI color codes
-export TERM='screen-256color'
+export TERM='xterm-256color'
 RS="\[\033[0m\]"    # reset
 HC="\[\033[1m\]"    # hicolor
 UL="\[\033[4m\]"    # underline
@@ -130,5 +130,11 @@ fi
 #for thefuck app
 # Requires https://github.com/nvbn/thefuck
 eval $(thefuck --alias)
+
+#run tmux
+
+if command -v tmux>/dev/null; then
+  [[ ! $TERM =~ screen ]] && [ -z $TMUX ] && exec tmux
+fi
 
 run-parts /etc/update-motd.d/
