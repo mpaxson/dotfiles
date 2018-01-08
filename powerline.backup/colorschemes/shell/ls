@@ -1,0 +1,33 @@
+{
+	"name": "default",
+	"groups": {
+		"date":		{"fg":"mediumcyan", "bg":"brightpurple"},
+		"time":		{"fg":"mediumcyan", "bg":"brightpurple"},
+		"time:divider":	{"fg":"mediumcyan", "bg":"white"},
+		"jobnum":               { "fg": "oldlace", "bg": "darkgreencopper" },
+		"user":                 { "fg": "oldlace", "bg": "blue", "attr": ["bold"] },
+		"superuser":            { "fg": "oldlace", "bg": "red", "attr": ["bold"] },
+		"virtualenv":           { "fg": "oldlace", "bg": "green" },
+		"branch":               { "fg": "gray61", "bg": "royalblue5" },
+		"branch_dirty":         { "fg": "yellow", "bg": "royalblue5" },
+		"branch_clean":         { "fg": "gray61", "bg": "royalblue5" },
+		"continuation":         { "fg": "lightyellow", "bg": "darkgreencopper" },
+		"continuation:current": { "fg": "oldlace", "bg": "darkgreencopper", "attr": ["bold"] },
+		"cwd":                  { "fg": "lightyellow", "bg": "gray13" },
+		"cwd:current_folder":   { "fg": "oldlace", "bg": "darkgreencopper", "attr": ["bold"] },
+		"cwd:divider":          { "fg": "gray61", "bg": "gray13" },
+		"hostname":             { "fg": "oldlace", "bg": "darkgreencopper" },
+		"exit_fail":            { "fg": "oldlace", "bg": "red" },
+		"exit_success":         { "fg": "oldlace", "bg": "green" },
+		"environment":          { "fg": "oldlace", "bg": "green" },
+		"mode":                 { "fg": "oldlace", "bg": "green", "attr": ["bold"] }
+	},
+	"mode_translations": {
+		"vicmd": {
+			"groups": {
+				"mode": { "fg": "oldlace", "bg": "blue", "attr": ["bold"] }
+			}
+		}
+	}
+}
+
