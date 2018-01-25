@@ -1,6 +1,6 @@
 sudo apt-get install fortune cowsay powerline thefuck python python-pip build-essential autoconf libgtk-3-dev gnome-tweak-tool tmux -y
 
-sudo apt-get install guake git exfat-fuse vim-gnome -y
+sudo apt-get install guake git exfat-fuse vim-gnome xclip -y
 
 pip install requests 
 mkdir ~/git_repos
