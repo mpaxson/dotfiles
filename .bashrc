@@ -131,10 +131,12 @@ fi
 # Requires https://github.com/nvbn/thefuck
 eval $(thefuck --alias)
 
+
+alias tmux=tmux -2
 #run tmux
 
 if command -v tmux>/dev/null; then
-  [[ ! $TERM =~ screen ]] && [ -z $TMUX ] && exec tmux
+  [[ ! $TERM =~ screen ]] && [ -z $TMUX ] && export TERM='screen-256color' && exec tmux -2v 
 fi
 
 run-parts /etc/update-motd.d/
