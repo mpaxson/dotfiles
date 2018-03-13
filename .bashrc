@@ -132,7 +132,7 @@ fi
 eval $(thefuck --alias)
 
 
-alias tmux=tmux -2
+alias tmux="tmux -2"
 #run tmux
 
 if command -v tmux>/dev/null; then
