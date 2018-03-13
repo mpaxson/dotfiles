@@ -1,12 +1,16 @@
-""" Dont duplicate errors same type. """
+""" Don't duplicate same errors from different linters. """
+import re
+from collections import defaultdict
+
+
+PATTERN_NUMBER = re.compile(r'^[A-Z]\d+$')
+
 
 DUPLICATES = (
 
     # multiple statements on one line
+    [('pycodestyle', 'E701'), ('pylint', 'C0321')],
     [('pep8', 'E701'), ('pylint', 'C0321')],
-
-    # missing whitespace around operator
-    [('pep8', 'E225'), ('pylint', 'C0326')],
 
     # unused variable
     [('pylint', 'W0612'), ('pyflakes', 'W0612')],
@@ -17,41 +21,80 @@ DUPLICATES = (
     # unused import
     [('pylint', 'W0611'), ('pyflakes', 'W0611')],
 
+    # whitespace before ')'
+    [('pylint', 'C0326'), ('pycodestyle', 'E202')],
+    [('pylint', 'C0326'), ('pep8', 'E202')],
+
+    # whitespace before '('
+    [('pylint', 'C0326'), ('pycodestyle', 'E211')],
+    [('pylint', 'C0326'), ('pep8', 'E211')],
+
+    # multiple spaces after operator
+    [('pylint', 'C0326'), ('pycodestyle', 'E222')],
+    [('pylint', 'C0326'), ('pep8', 'E222')],
+
+    # missing whitespace around operator
+    [('pylint', 'C0326'), ('pycodestyle', 'E225')],
+    [('pylint', 'C0326'), ('pep8', 'E225')],
+
     # unexpected spaces
+    [('pylint', 'C0326'), ('pycodestyle', 'E251')],
     [('pylint', 'C0326'), ('pep8', 'E251')],
 
     # long lines
+    [('pylint', 'C0301'), ('pycodestyle', 'E501')],
     [('pylint', 'C0301'), ('pep8', 'E501')],
 
-    # whitespace before '('
-    [('pylint', 'C0326'), ('pep8', 'E211')],
-
     # statement ends with a semicolon
+    [('pylint', 'W0301'), ('pycodestyle', 'E703')],
     [('pylint', 'W0301'), ('pep8', 'E703')],
 
     # multiple statements on one line
-    [('pylint', 'C0321'), ('pep8', 'E702')],
+    [('pylint', 'C0321'), ('pycodestyle', 'E702')],
 
     # bad indentation
+    [('pylint', 'W0311'), ('pycodestyle', 'E111')],
     [('pylint', 'W0311'), ('pep8', 'E111')],
+
+    # wildcart import
+    [('pylint', 'W00401'), ('pyflakes', 'W0401')],
+
+    # module docstring
+    [('pydocstyle', 'D100'), ('pylint', 'C0111')],
+    [('pep257', 'D100'), ('pylint', 'C0111')],
 
 )
 
 DUPLICATES = dict((key, values) for values in DUPLICATES for key in values)
 
 
+def remove_duplicates(errors):
+    """ Filter duplicates from given error's list. """
+    passed = defaultdict(list)
+    for error in errors:
+        key = error.linter, error.number
+        if key in DUPLICATES:
+            if key in passed[error.lnum]:
+                continue
+            passed[error.lnum] = DUPLICATES[key]
+        yield error
+
+
 class Error(object):
 
-    """ Store error information. """
+    """ Store an error's information. """
 
     def __init__(self, linter="", col=1, lnum=1, type="E",
-                 text="unknown error", filename="", **kwargs):
+                 text="unknown error", filename="", number="", **kwargs):
         """ Init error information with default values. """
         text = ' '.join(str(text).strip().split('\n'))
         if linter:
             text = "%s [%s]" % (text, linter)
-        number = text.split(' ', 1)[0]
-        self._info = dict(linter=linter, col=col, lnum=lnum, type=type,
+        number = number or text.split(' ', 1)[0]
+        if not PATTERN_NUMBER.match(number):
+            number = ""
+
+        self._info = dict(linter=linter, col=col, lnum=lnum, type=type[:1],
                           text=text, filename=filename, number=number)
 
     def __getattr__(self, name):
@@ -67,4 +110,4 @@ class Error(object):
     def __repr__(self):
         return "<Error: %s %s>" % (self.number, self.linter)
 
-# pylama:ignore=W0622,D
+# pylama:ignore=W0622,D,R0924

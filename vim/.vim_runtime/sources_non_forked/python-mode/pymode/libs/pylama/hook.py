@@ -1,4 +1,4 @@
-""" SCM hooks. Integration with git and mercurial. """
+"""SCM hooks. Integration with git and mercurial."""
 
 from __future__ import absolute_import
 
@@ -6,7 +6,7 @@ import sys
 from os import path as op, chmod
 from subprocess import Popen, PIPE
 
-from .main import LOGGER
+from .main import LOGGER, process_paths
 from .config import parse_options, setup_logger
 
 
@@ -17,10 +17,9 @@ except ImportError:   # Python 2
 
 
 def run(command):
-    """ Run a shell command.
+    """Run a shell command.
 
     :return str: Stdout
-
     """
     p = Popen(command.split(), stdout=PIPE, stderr=PIPE)
     (stdout, stderr) = p.communicate()
@@ -28,20 +27,19 @@ def run(command):
             [line.strip() for line in stderr.splitlines()])
 
 
-def git_hook():
-    """ Run pylama after git commit. """
-    from .main import check_files
-
+def git_hook(error=True):
+    """Run pylama after git commit."""
     _, files_modified, _ = run("git diff-index --cached --name-only HEAD")
 
     options = parse_options()
     setup_logger(options)
-    check_files([f for f in map(str, files_modified)], options)
+    candidates = list(map(str, files_modified))
+    if candidates:
+        process_paths(options, candidates=candidates, error=error)
 
 
 def hg_hook(ui, repo, node=None, **kwargs):
-    """ Run pylama after mercurial commit. """
-    from .main import check_files
+    """Run pylama after mercurial commit."""
     seen = set()
     paths = []
     if len(repo):
@@ -55,11 +53,12 @@ def hg_hook(ui, repo, node=None, **kwargs):
 
     options = parse_options()
     setup_logger(options)
-    check_files(paths, options)
+    if paths:
+        process_paths(options, candidates=paths)
 
 
 def install_git(path):
-    """ Install hook in Git repository. """
+    """Install hook in Git repository."""
     hook = op.join(path, 'pre-commit')
     with open(hook, 'w') as fd:
         fd.write("""#!/usr/bin/env python
@@ -79,7 +78,7 @@ def install_hg(path):
         open(hook, 'w+').close()
 
     c = ConfigParser()
-    c.readfp(open(path, 'r'))
+    c.readfp(open(hook, 'r'))
     if not c.has_section('hooks'):
         c.add_section('hooks')
 
@@ -89,7 +88,7 @@ def install_hg(path):
     if not c.has_option('hooks', 'qrefresh'):
         c.set('hooks', 'qrefresh', 'python:pylama.hooks.hg_hook')
 
-    c.write(open(path, 'w+'))
+    c.write(open(hook, 'w+'))
 
 
 def install_hook(path):
@@ -101,11 +100,11 @@ def install_hook(path):
         LOGGER.warn('Git hook has been installed.')
 
     elif op.exists(hg):
-        install_hg(git)
+        install_hg(hg)
         LOGGER.warn('Mercurial hook has been installed.')
 
     else:
         LOGGER.error('VCS has not found. Check your path.')
         sys.exit(1)
 
-# lint_ignore=F0401,E1103
+# pylama:ignore=F0401,E1103,D210,F0001

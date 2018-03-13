@@ -4,27 +4,16 @@ set foldmethod=syntax
 set foldnestmax=5
 set foldlevelstart=20
 
+set background=dark
 syntax enable
-colorscheme quantum
+colorscheme peaksea
 
-"=======if on ssh======="
 
-"Off if SSH"
-"----------"
-let g:quantum_italics = 1
-let g:airline_theme='quantum'
-
-"================================================"
-"==========         Python      ================"
-"================================================"
-"Run python file by pressing f9"
-
-autocmd FileType python nnoremap <buffer> <F9> :w <bar> :exec '!python' shellescape(@%, 1)<cr>
-
+"===================================="
 "    Python Mode Configureation"
-
+"===================================="
 let g:pymode                    = 1
-let g:pymode_version            = `python`
+let g:pymode_version            = 'python3'
 let g:pymode_options            = 1
 let g:pymode_indent             = 1
 let g:pymode_folding            = 1

@@ -2,7 +2,7 @@ let g:airline#themes#quantum#palette = {}
 
 function! airline#themes#quantum#refresh()
     let g:airline#themes#quantum#palette.accents = {
-                \ 'red': airline#themes#get_highlight('Error'),
+                \ 'red': airline#themes#get_highlight('Identifier'),
                 \ }
 
     let s:N1 = airline#themes#get_highlight2(['CursorLine', 'bg'], ['Directory', 'fg'], 'bold')
