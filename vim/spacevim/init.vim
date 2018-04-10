@@ -34,7 +34,26 @@ map <Esc>[21~ <F10>
 map <Esc>[23~ <F11>
 map <Esc>[24~ <F12>
 " SpaceVim Layers: {{{
+
 call SpaceVim#layers#load('tags')
+call SpaceVim#layers#load('cscope')
+call SpaceVim#layers#load('lang#python')
+call SpaceVim#layers#load('lang#javascript')
+call SpaceVim#layers#load('lang#json')
+call SpaceVim#layers#load('lang#tmux')
+call SpaceVim#layers#load('lang#xml')
+call SpaceVim#layers#load('lang#c')
+call SpaceVim#layers#load('lang#markdown')
+call SpaceVim#layers#load('lang#vim')
+call SpaceVim#layers#load('lang#html')
+call SpaceVim#layers#load('lang#sh')
+call SpaceVim#layers#load('shell',
+        \ {
+        \ 'default_position' : 'top',
+        \ 'default_height' : 30,
+        \ }
+        \ )
+call SpaceVim#layers#load('git')
 " }}}
 
 
