@@ -33,10 +33,13 @@ sudo cp -r powerline /usr/share/powerline/config_files
 
 sh -c "$(curl -fsSL https://raw.githubusercontent.com/robbyrussell/oh-my-zsh/master/tools/install.sh)"
 
-cp oh_my-zsh/themes/* ~/.oh_my-zsh/themes/
+cp oh-my-zsh/themes/* ~/.oh-my-zsh/themes/
 
 echo "backing up zhsrc"
 mv ~/.zshrc ~/.zshrc.backup
 
 ln ./.zshrc ~/.zshrc
+
+
+git clone https://github.com/bhilburn/powerlevel9k.git ~/.oh-my-zsh/custom/themes/powerlevel9k
 
