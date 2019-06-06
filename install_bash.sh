@@ -5,7 +5,7 @@ sudo mv /etc/update-motd.d /etc/update-motd.d.backup
 
 echo 'copying motd/update-motd.d to /etc/update-motd.d'
 sudo mkdir /etc/update-motd.d
-sudo cp -r  motd/update-motd.d/* /etc/update-motd.d 
+sudo cp -r  motd/update-motd.d/* /etc/update-motd.d
 
 echo 'moving ~/.bashrc to ~/.bashrc.backup\n...'
 mv ~/.bashrc ~/.bashrc.backup
@@ -30,3 +30,13 @@ cp .tmux.conf ~/.tmux.conf
 sudo mv /usr/share/powerline/config_files /usr/share/powerline/config_files.backup
 ./fonts/install.sh
 sudo cp -r powerline /usr/share/powerline/config_files
+
+sh -c "$(curl -fsSL https://raw.githubusercontent.com/robbyrussell/oh-my-zsh/master/tools/install.sh)"
+
+cp oh_my-zsh/themes/* ~/.oh_my-zsh/themes/
+
+echo "backing up zhsrc"
+mv ~/.zshrc ~/.zshrc.backup
+
+ln ./.zshrc ~/.zshrc
+
