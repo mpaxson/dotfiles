@@ -3,7 +3,8 @@
 Check for multi-command patterns that should be run separately.
 
 EXCEPTIONS (allowed):
-- cd <path> && <single command> (directory context)
+- cd <path> && <commands> (directory context)
+- source .venv/bin/activate && <commands> (venv activation)
 - Commands ending with echo (showing results)
 - Single commands (obviously)
 """
@@ -15,6 +16,11 @@ import re
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from common import strip_cd_prefix
+
+# Pattern to strip venv activation prefix
+VENV_ACTIVATE_PATTERN = re.compile(
+    r'^(?:source|\.)\s+\.venv/bin/activate\s*&&\s*'
+)
 
 # Multi-command split pattern
 MULTI_COMMAND_PATTERN = re.compile(r'\s*(?:&&|\|\||;)\s*')
@@ -49,11 +55,18 @@ def is_exception(command: str, commands: list[str]) -> bool:
     return False
 
 
+def strip_venv_activate(command: str) -> str:
+    """Strip leading 'source .venv/bin/activate &&' from a command."""
+    return VENV_ACTIVATE_PATTERN.sub('', command.strip())
+
+
 def check(command: str) -> None:
     """Check command and block if it contains multiple commands."""
     # Strip cd prefix (cd /path && cmd is allowed)
-    command_without_cd = strip_cd_prefix(command)
-    commands = split_commands(command_without_cd)
+    command_stripped = strip_cd_prefix(command)
+    # Strip venv activation (source .venv/bin/activate && cmd is allowed)
+    command_stripped = strip_venv_activate(command_stripped)
+    commands = split_commands(command_stripped)
 
     # Single command is always allowed
     if len(commands) <= 1:

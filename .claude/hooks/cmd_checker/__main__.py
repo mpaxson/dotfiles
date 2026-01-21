@@ -27,6 +27,8 @@ CHECK_MODULES = [
     "check_edit.py",
     "check_multi_command.py",
     "check_git_c.py",
+    "check_python.py",
+    "check_absolute_paths.py",
 ]
 
 
@@ -79,12 +81,20 @@ def main():
     if not command:
         sys.exit(0)
 
+    # Inject session PWD from environment into input data for checkers
+    session_pwd = os.environ.get("PWD", "")
+    if session_pwd:
+        input_data["session_cwd"] = session_pwd
+
+    # Re-serialize with session_cwd added
+    enriched_input = json.dumps(input_data)
+
     log(f"Checking: {command[:100]}")
 
     # Run all checks in parallel
     with ThreadPoolExecutor(max_workers=len(CHECK_MODULES)) as executor:
         futures = {
-            executor.submit(run_check, module, raw_input): module
+            executor.submit(run_check, module, enriched_input): module
             for module in CHECK_MODULES
         }
 

@@ -10,12 +10,15 @@ CMD_CHECKER_DIR = os.path.dirname(os.path.abspath(__file__))
 HOOKS_DIR = os.path.dirname(CMD_CHECKER_DIR)
 
 
-def test_module(module, command, should_block, description):
+def test_module(module, command, should_block, description, session_cwd=None):
     """Test a single check module."""
     module_path = os.path.join(CMD_CHECKER_DIR, module)
+    input_data = {"tool_name": "Bash", "tool_input": {"command": command}}
+    if session_cwd:
+        input_data["session_cwd"] = session_cwd
     r = subprocess.run(
         ["python3", module_path],
-        input=json.dumps({"tool_name": "Bash", "tool_input": {"command": command}}),
+        input=json.dumps(input_data),
         capture_output=True, text=True
     )
     blocked = r.returncode == 2
@@ -39,6 +42,10 @@ def test_full_checker(command, should_block, description):
 def main():
     print("Testing cmd_checker modules...\n")
 
+    # Get home dir for tests
+    import pathlib
+    home = str(pathlib.Path.home())
+
     # Individual module tests
     module_tests = [
         ("check_search.py", "grep pattern file.txt", False, "single grep (allowed)"),
@@ -56,6 +63,17 @@ def main():
         ("check_multi_command.py", "cd /tmp && ls", False, "cd && cmd (allowed)"),
         ("check_multi_command.py", "git status", False, "single cmd (allowed)"),
         ("check_multi_command.py", 'cmd || echo "fallback"', False, "|| echo (allowed)"),
+        # Python/venv tests
+        ("check_python.py", "../.venv/bin/python test.py", True, "../.venv path (blocked)"),
+        ("check_python.py", ".venv/bin/python test.py", False, "relative .venv (allowed)"),
+        ("check_python.py", f"source {home}/project/.venv/bin/activate", True, "absolute venv source (blocked)"),
+        ("check_python.py", "source .venv/bin/activate", False, "relative venv source (allowed)"),
+        # Absolute path tests
+        ("check_absolute_paths.py", f"python {home}/project/script.py", True, "absolute home path (blocked)"),
+        ("check_absolute_paths.py", "python script.py", False, "relative path (allowed)"),
+        ("check_absolute_paths.py", "cat /tmp/log.txt", False, "/tmp path (allowed)"),
+        ("check_absolute_paths.py", f"{home}/.venv/bin/python manage.py", True, "absolute venv python (blocked)"),
+        ("check_absolute_paths.py", ".venv/bin/python manage.py", False, "relative venv python (allowed)"),
     ]
 
     passed = failed = 0

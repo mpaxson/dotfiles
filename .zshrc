@@ -228,6 +228,7 @@ autoload -Uz add-zsh-hook
 
 [[ -f ~/.config/zsh/plugins.zsh ]] && zinit snippet ~/.config/zsh/plugins.zsh
 [[ -f ~/.config/zsh/history.zsh ]] && zinit snippet ~/.config/zsh/history.zsh
+[[ -f ~/.config/zsh/completions.zsh ]] && zinit snippet ~/.config/zsh/completions.zsh
 
 [[ -f ~/.config/zsh/keys.zsh ]] && zinit snippet ~/.config/zsh/keys.zsh
 [[ -f ~/.config/zsh/settings.zsh ]] && zinit snippet ~/.config/zsh/settings.zsh
@@ -311,19 +312,12 @@ autoload -Uz bracketed-paste-magic
 zle -N bracketed-paste bracketed-paste-magic
 
 
-
 # bun
 export BUN_INSTALL="$HOME/.bun"
 export PATH="$BUN_INSTALL/bin:$PATH"
 # bun completions
 [ -s "/home/kettle/.bun/_bun" ] && source "/home/kettle/.bun/_bun"
-
-# just completions (patched for module support)
-if [[ -f ~/.config/just/completions.zsh ]]; then
-    zinit snippet ~/.config/just/completions.zsh
-
-fi
-
+# i am currenlty moving the just completions to the zsh/completions.zsh and need to move _just to completions/
 if [ -z "$TMUX" ]; then
   tmux attach || tmux new-session
   exit

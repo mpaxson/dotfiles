@@ -10,14 +10,14 @@ zstyle ':completion:*:messages' format "%F{green}%d%f"
 
 #zstyle ':completion:*:descriptions' format '[%d]'
 zstyle ':completion:*' list-colors "${(s.:.)LS_COLORS}"
-zstyle ':completion:*:warnings' format ' %F{red}-- no matches found --%f'
+#zstyle ':completion:*:warnings' format ' %F{red}-- no matches found --%f'
 
 
 zstyle ':completion:*' menu no
 zstyle ':fzf-tab:*' fzf-command ftb-tmux-popup
 
 
-# zstyle ':fzf-tab:*' show-group full
+zstyle ':fzf-tab:*' show-group full
 
 # zstyle ':fzf-tab:*' single-group full
 # zstyle ':fzf-tab:*' prefix ''
