@@ -81,9 +81,40 @@ lint:
 |---------|---------------------------|----------------------------|
 | Namespace | Merged into parent | Separate (`name::*`) |
 | Calling | `just recipe` | `just name::recipe` |
+| Working dir | Parent justfile's dir | Module's directory |
 | Best for | dev.just only | All other modules |
 
 **Rule of thumb:** Use `import` only for `dev.just`. Use `mod` for everything else.
+
+### Module Working Directory
+
+**Critical:** Module recipes run from the module's directory, not the invoking justfile's directory. This breaks commands like `git submodule status` when the module is in a subdirectory.
+
+**Solution:** Add `[no-cd]` to recipes that need to run from the invocation directory:
+
+```just
+# just/git.just - Module for git operations
+# Without [no-cd], git commands would run from just/ directory
+
+[no-cd]
+status:
+    git submodule status
+
+[no-cd]
+update:
+    git submodule update --remote --merge
+```
+
+**When to use `[no-cd]`:**
+- Git operations (submodules, status, diff)
+- Any command that operates on the project root
+- Commands that expect to find files relative to where `just` was invoked
+
+**Alternative:** Use `{{invocation_directory()}}` for specific paths:
+```just
+build:
+    go build -o {{invocation_directory()}}/bin/app .
+```
 
 ### Common Dev Module (Imported)
 
