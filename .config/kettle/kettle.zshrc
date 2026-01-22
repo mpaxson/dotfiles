@@ -13,11 +13,10 @@ if command -v npm >/dev/null; then
   if [ -n "$NPM_ROOT" ] && [ -f "$NPM_ROOT/@hyperupcall/autoenv/activate.sh" ]; then
     source "$NPM_ROOT/@hyperupcall/autoenv/activate.sh"
   fi
-fi 
+fi
 
 if [ -f $HOME/.autoenv/activate.sh ]; then
   source $HOME/.autoenv/activate.sh
 fi
 
 
-source /home/kettle/.config/kettle/completions/kettle.zsh

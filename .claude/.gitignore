@@ -1,0 +1,10 @@
+cache/
+debug/
+plugins/
+statsig/
+todos/
+
+file-history/
+projects/
+shell-snapshots/
+history.jsonl
