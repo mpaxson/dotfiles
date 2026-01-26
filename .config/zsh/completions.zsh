@@ -1,4 +1,5 @@
-[[ -f ~/.config/zsh/completions/_just ]] && source ~/.config/zsh/completions/_just
-[[ -f ~/.config/zsh/completions/_inv ]] && source ~/.config/zsh/completions/_inv
+# Add custom completions directory to fpath BEFORE compinit
+fpath=(~/.config/zsh/completions $fpath)
 
-autoload -Uz compinit; compinit
+# Completions are loaded via fpath, not source
+# Files: _just, _inv, _invoke

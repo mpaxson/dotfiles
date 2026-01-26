@@ -34,20 +34,20 @@ setopt promptsubst
 PS1="READY >" # provide a simple prompt till the theme loads
 zinit light Aloxaf/fzf-tab
 
-zi for \
+# Deferred dev tools (load after prompt)
+zi wait lucid for \
     from'gh-r' \
     sbin'**/cmake -> cmake' \
     sbin'**/ctest -> ctest' \
     sbin'**/cpack -> cpack' \
   @Kitware/CMake
 
-zi for \
+zi wait lucid for \
     from'gh-r' \
     sbin'bin/lua-language-server -> lua-language-server' \
   @LuaLS/lua-language-server
 
-
-zi for \
+zi wait lucid for \
     from'gh-r' \
     sbin'lua* -> checkmake' atclone" ./checkmake* completion zsh > _checkmake" atpull"%atclone" as"completion" \
   @checkmake/checkmake
@@ -60,69 +60,70 @@ zi for \
 
 
 
+# fzf loads immediately (needed for fzf-tab)
+zinit as"null" from"gh-r" for \
+    sbin"fzf"     junegunn/fzf
+
+# Other CLI tools deferred
 zinit as"null" wait lucid from"gh-r" for \
     sbin"lsd"     lsd-rs/lsd \
     sbin"fd"      @sharkdp/fd \
     sbin"bat" atclone"./bat*/bat --completion zsh > _bat" atpull"%atclone" as"completion"     @sharkdp/bat \
-    sbin"fzf"     junegunn/fzf \
     sbin"rg" atclone"./rip*/rg --generate=complete-zsh > _rg" atpull"%atclone" as"completion"     @BurntSushi/ripgrep \
-    sbin"**/lazygit" @jesseduffield/lazygit \
-    # sbin"kettle"  kettleofkethchup/kettle
+    sbin"**/lazygit" @jesseduffield/lazygit
 
 
-zinit for \
+zinit wait lucid for \
     atclone'golangci-lint completion zsh > _golangci-lint' \
     from'gh-r' \
     sbin'golangci-lint' \
   @golangci/golangci-lint
 
-zinit ice as"program" pick"yank" make
+zinit ice wait lucid as"program" pick"yank" make
 zinit light mptre/yank
 
-zinit for \
+zinit wait lucid for \
     as'null' \
     configure'--disable-utf8proc --prefix=$PWD --quiet' \
     make'PREFIX=$PWD --quiet install'\
     sbin \
   @tmux/tmux
 
-zinit for \
+zinit wait lucid for \
     as'null' \
     configure'--prefix=$PWD' \
     make'PREFIX=$ZPFX install'\
     sbin \
   @eradman/entr
 
-zi for \
+zi wait lucid for \
     from'gh-r' \
     sbin'* -> jq' \
     nocompile \
   @jqlang/jq
 
-zi for \
+zi wait lucid for \
     from'gh-r' \
     sbin'just' \
   @casey/just
 
-
-zi for \
+zi wait lucid for \
     from'gh-r' \
     sbin'**/nvim -> nvim' \
     ver'nightly' \
   neovim/neovim
 
-
-zi for \
+zi wait lucid for \
     as'completions' \
     atclone'buildx* completion zsh > _buildx' \
     from"gh-r" \
     sbin'!buildx-* -> buildx' \
   @docker/buildx
 
+zinit ice wait lucid
 zinit build for @aspiers/stow
 
-
-zi for \
+zi wait lucid for \
     from'gh-r' \
     sbin"**/gh" atclone"./**/gh completion -s zsh > _gh" atpull"%atclone" as"completion"\
   cli/cli
@@ -135,23 +136,23 @@ zinit load tmux-plugins/tpm
 
 
 
-### --- Yazi File Manager via zinit ---
+### --- Yazi File Manager via zinit (deferred) ---
 
 # Yazi file manager
-zinit ice from"gh-r" as"program" \
+zinit ice wait lucid from"gh-r" as"program" \
     pick"yazi" pick"ya" \
     sbin'ya -> ya' \
-    sbin'yazi -> yazi' \
-
+    sbin'yazi -> yazi'
 zinit light sxyazi/yazi
+
 # Clone the plugins monorepo
-zinit ice from "gh-r" \
+zinit ice wait lucid from "gh-r" \
     atclone"mkdir -p ~/.config/yazi/plugins && ln -sfn {dir} ~/.config/yazi/plugins/plugins-repo" \
     atpull"%atclone"
 zinit light yazi-rs/plugins
 
 # Starship plugin for Yazi
-zinit ice \
+zinit ice wait lucid \
     atclone"mkdir -p ~/.config/yazi/plugins && ln -sfn \$PWD ~/.config/yazi/plugins/starship.yazi" \
     atpull"%atclone" \
     as"null"
@@ -171,12 +172,15 @@ zinit light Rolv-Apneseth/starship.yazi
 
 
 
+# Load custom completions fpath BEFORE zicompinit
+[[ -f ~/.config/zsh/completions.zsh ]] && source ~/.config/zsh/completions.zsh
+
 zinit ice wait lucid atinit"zicompinit; zicdreplay"
 zinit light zdharma-continuum/fast-syntax-highlighting
 
 zinit ice wait lucid atload"!_zsh_autosuggest_start"
 
-zinit for \
+zinit wait lucid for \
     as'null' \
     cmake'.' \
     make'install' \
@@ -228,7 +232,7 @@ autoload -Uz add-zsh-hook
 
 [[ -f ~/.config/zsh/plugins.zsh ]] && zinit snippet ~/.config/zsh/plugins.zsh
 [[ -f ~/.config/zsh/history.zsh ]] && zinit snippet ~/.config/zsh/history.zsh
-[[ -f ~/.config/zsh/completions.zsh ]] && zinit snippet ~/.config/zsh/completions.zsh
+# completions.zsh loaded earlier (before zicompinit)
 
 [[ -f ~/.config/zsh/keys.zsh ]] && zinit snippet ~/.config/zsh/keys.zsh
 [[ -f ~/.config/zsh/settings.zsh ]] && zinit snippet ~/.config/zsh/settings.zsh
@@ -244,7 +248,7 @@ autoload -Uz add-zsh-hook
 
 
 
-autoload -U compinit; compinit
+# compinit handled by zicompinit in fast-syntax-highlighting load
 
 
 
