@@ -32,6 +32,11 @@ local sanitized_in='${~ctxt[hpre]}"${${in//\\ / }/#\~/$HOME}"'
 
 setopt promptsubst
 PS1="READY >" # provide a simple prompt till the theme loads
+# Core completion styles
+[[ -f ~/.config/zsh/styles.zsh ]] && source ~/.config/zsh/styles.zsh
+
+# fzf-tab deferred (loads after prompt, then loads its config)
+zinit ice wait lucid atload"source ~/.config/zsh/fzf-tab.zsh"
 zinit light Aloxaf/fzf-tab
 
 # Deferred dev tools (load after prompt)
@@ -238,7 +243,8 @@ autoload -Uz add-zsh-hook
 [[ -f ~/.config/zsh/settings.zsh ]] && zinit snippet ~/.config/zsh/settings.zsh
 
 
-[[ -f ~/.config/zsh/styles.zsh ]] && zinit snippet ~/.config/zsh/styles.zsh
+# styles.zsh loaded via fzf-tab atload
+# [[ -f ~/.config/zsh/styles.zsh ]] && zinit snippet ~/.config/zsh/styles.zsh
 [[ -f ~/.config/zsh/exports.zsh ]] && zinit snippet ~/.config/zsh/exports.zsh
 [[ -f ~/.config/zsh/aliases.zsh ]] && zinit snippet ~/.config/zsh/aliases.zsh
 

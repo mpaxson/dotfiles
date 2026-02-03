@@ -92,16 +92,21 @@ lint:
 
 ## Variables in Modules
 
-Modules have their own variable scope. Use `env_var()` for paths:
+Modules have their own variable scope. For paths relative to the module file, use `source_directory()`:
 
 ```just
-# docker.just
-PROJECT_ROOT := env_var("PWD")
-DOCKERFILE := PROJECT_ROOT / "docker" / "Dockerfile"
+# automation/just/ansible.just
 
-build:
-    cd {{PROJECT_ROOT}} && docker build -f {{DOCKERFILE}} .
+# source_directory() = automation/just/
+# Navigate up to get automation root
+automation_root := source_directory() / ".."
+
+[working-directory(automation_root)]
+deploy:
+    ansible-playbook ansible/playbooks/deploy.yml
 ```
+
+**Warning:** `justfile_directory()` always returns the ROOT justfile's directory, not the module's. Use `source_directory()` in modules.
 
 ## Calling Between Modules
 

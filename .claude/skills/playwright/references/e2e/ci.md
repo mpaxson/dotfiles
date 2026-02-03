@@ -22,6 +22,11 @@ on:
   pull_request:
     branches: [main]
 
+# Cancel in-progress runs when new commit pushed to same branch
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   test:
     timeout-minutes: 60

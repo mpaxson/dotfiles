@@ -1,6 +1,6 @@
 ---
 name: just
-description: Bootstrap repos with just command runner. Use when setting up new projects, creating justfiles, or adding task automation. Provides ./dev bootstrap script that installs just, modular justfile structure in just/ directory, and recipe conventions.
+description: Bootstrap repos with just command runner. Use when setting up new projects, creating justfiles, adding task automation, or organizing recipes with groups and modules. Provides ./dev bootstrap script, modular justfile structure in just/ directory, recipe conventions, and intelligent grouping strategies for fzf-tab completion.
 ---
 
 # Just Command Runner
@@ -165,8 +165,49 @@ clean:
 ```bash
 just --list                    # Shows modules collapsed
 just --list --list-submodules  # Shows all module recipes expanded
+just --groups                  # List all recipe groups
 just lua::                     # Tab-complete shows lua recipes
 ```
+
+## Organizing Recipes
+
+Use **modules** for namespacing (separate files) and **groups** for cross-cutting organization (tags).
+
+### Groups for Organization
+
+```just
+[group('dev')]
+dev: setup
+    ./run-dev.sh
+
+[group('dev')]
+[group('ci')]         # Recipe in multiple groups
+test:
+    cargo test
+```
+
+`just --list` shows:
+```
+[ci]
+    test
+
+[dev]
+    dev
+    test
+```
+
+### Intelligent Grouping Strategy
+
+| Group | Purpose |
+|-------|---------|
+| `dev` | Local development (watch, run, setup) |
+| `build` | Compilation, bundling |
+| `test` | Testing (unit, integration, e2e) |
+| `ci` | CI pipeline tasks (often overlaps) |
+| `deploy` | Deployment to environments |
+| `maintenance` | Cleanup, dependency updates |
+
+See `references/groups.md` for detailed patterns and fzf-tab integration.
 
 ## Shell Completions Setup
 
@@ -235,6 +276,7 @@ Detailed syntax and patterns in `references/`:
 
 | File | Contents |
 |------|----------|
+| `groups.md` | Recipe groups, intelligent grouping strategy, fzf-tab integration |
 | `modules.md` | Module system (`mod`), namespacing with `::`, import vs mod |
 | `settings.md` | All justfile settings (`set quiet`, `set dotenv-load`, etc.) |
 | `recipes.md` | Recipe syntax, parameters, dependencies, shebang recipes |

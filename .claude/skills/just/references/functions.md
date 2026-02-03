@@ -26,15 +26,50 @@ which("cmd")            # Find in PATH or empty string
 ## Justfile Locations
 
 ```just
-justfile()              # Path to current justfile
-justfile_directory()    # Parent dir of justfile
-source_file()           # Current source file path
-source_directory()      # Current source file dir
-invocation_directory()  # Dir where just was run
+justfile()              # Path to ROOT justfile (entry point)
+justfile_directory()    # Parent dir of ROOT justfile
+source_file()           # Path to CURRENT .just file being evaluated
+source_directory()      # Parent dir of CURRENT .just file
+invocation_directory()  # Dir where `just` command was run
 just_executable()       # Path to just binary
 just_pid()              # Process ID
 home_directory()        # User home (~)
 ```
+
+### Critical: source_directory() vs justfile_directory()
+
+When writing **imported or module files**, use `source_directory()` for paths relative to that file:
+
+```
+project/
+├── justfile              # Root - imports automation/just/ansible.just
+└── automation/
+    ├── just/
+    │   └── ansible.just  # Module file
+    └── ansible/
+        └── playbooks/
+```
+
+```just
+# automation/just/ansible.just
+
+# WRONG - points to project/, not automation/
+wrong_root := justfile_directory()
+
+# CORRECT - points to automation/just/, can navigate to automation/
+automation_root := source_directory() / ".."
+
+[working-directory(automation_root)]
+deploy:
+    ansible-playbook ansible/playbooks/deploy.yml
+```
+
+| Function | In root justfile | In imported/module file |
+|----------|------------------|-------------------------|
+| `justfile_directory()` | Root dir | Root dir (unchanged) |
+| `source_directory()` | Root dir | Module file's dir |
+
+**Rule:** In modules/imports, always use `source_directory()` for relative paths.
 
 ## String Manipulation
 

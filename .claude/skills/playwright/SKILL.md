@@ -38,10 +38,26 @@ await browser.close();
 
 ## Selectors (prefer in order)
 
-1. `page.getByRole()` - accessibility-based
-2. `page.getByTestId()` - explicit test hooks
-3. `page.getByText()` - visible text
+1. `page.getByRole()` - accessibility-based (buttons, links, headings)
+2. `page.getByTestId()` or `[data-testid="..."]` - **explicit test hooks (most reliable)**
+3. `page.getByText()` - visible text (exact match preferred)
 4. `page.locator()` - CSS/XPath fallback
+
+### Avoid `has-text()` for Buttons
+
+**Bad** - fragile, breaks if text changes:
+```typescript
+page.locator('button:has-text("Start Draft")')
+```
+
+**Good** - stable, explicit test contract:
+```typescript
+page.locator('[data-testid="startDraftButton"]')
+// or
+page.getByTestId('startDraftButton')
+```
+
+When adding new UI elements, always add `data-testid` attributes for testability.
 
 ## E2E Testing References
 

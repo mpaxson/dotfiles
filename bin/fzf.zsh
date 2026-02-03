@@ -14,6 +14,14 @@ if [[ $# -ne 1 ]]; then
 fi
 
 file=${1/#\~\//$HOME/}
+
+# Check if argument is a valid path (file or directory)
+if [[ ! -e "$file" ]]; then
+  # Not a file - might be a command name, just recipe, etc.
+  echo "$1"
+  exit 0
+fi
+
 type=$(file --dereference --mime -- "$file")
 #BAT_CMD=bat --style="grid,header"--color=always --pager=never -- 
 if ! command -v bat > /dev/null; then
