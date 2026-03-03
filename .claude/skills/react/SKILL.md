@@ -170,4 +170,5 @@ function TabContainer() {
 - `references/async-patterns.md` - Server Components, use(), Suspense, Actions, streaming
 - `references/hooks.md` - All React 19 hooks with examples
 - `references/performance.md` - React Compiler, memoization, code splitting
-- `references/component-patterns.md` - Composition, error boundaries, portals
+- `references/component-patterns-composition.md` - Children, compound components, slots, render props, forwarding refs
+- `references/component-patterns-advanced.md` - Error boundaries, portals, HOCs, context pattern

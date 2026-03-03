@@ -75,7 +75,7 @@ jobs:
       - run: npm test
 ```
 
-See [actions-syntax.md](references/actions-syntax.md) for triggers, contexts, expressions, and job configuration.
+See [actions-triggers-jobs.md](references/actions-triggers-jobs.md) and [actions-steps-expressions.md](references/actions-steps-expressions.md) for triggers, contexts, expressions, and job configuration.
 
 ## Optimization Strategies
 
@@ -153,7 +153,7 @@ jobs:
 | `timeout-minutes` on jobs | Prevent runaways |
 | `concurrency.cancel-in-progress` | Kill stale runs |
 
-See [optimization.md](references/optimization.md) for advanced patterns including Docker layer caching, artifact strategies, and self-hosted runner optimization.
+See [optimization-caching.md](references/optimization-caching.md) and [optimization-workflows.md](references/optimization-workflows.md) for advanced patterns including Docker layer caching, artifact strategies, and self-hosted runner optimization.
 
 ## Common Patterns
 
@@ -232,6 +232,8 @@ act --secret-file .secrets       # With secrets
 ## Resources
 
 - [gh-cli.md](references/gh-cli.md) - Complete gh command reference
-- [actions-syntax.md](references/actions-syntax.md) - Workflow syntax deep-dive
-- [optimization.md](references/optimization.md) - Advanced optimization patterns
+- [actions-triggers-jobs.md](references/actions-triggers-jobs.md) - Workflow triggers, concurrency, jobs, matrix, runners, services
+- [actions-steps-expressions.md](references/actions-steps-expressions.md) - Steps, conditionals, contexts, expressions, secrets, artifacts
+- [optimization-caching.md](references/optimization-caching.md) - Dependency caching, build cache, Docker layer caching
+- [optimization-workflows.md](references/optimization-workflows.md) - Parallelization, path filters, conditional jobs, checkout optimization
 - [nodejs.md](references/nodejs.md) - Node.js/npm/pnpm/yarn setup, Playwright/Cypress caching, monorepo patterns

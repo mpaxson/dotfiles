@@ -120,18 +120,21 @@ export function ResponsiveDialog({ children, ...props }) {
 ## References
 
 ### Custom Components (Start Here)
-- **[custom-components.md](references/custom-components.md)** - Wrapping patterns, CVA variants, compound components, polymorphic patterns
+- **[custom-components-basic.md](references/custom-components-basic.md)** - Basic wrapper, CVA variants, form field patterns
+- **[custom-components-advanced.md](references/custom-components-advanced.md)** - Compound components, polymorphic, responsive modal, confirm dialog
 
 ### Forms
 - **[form-integration.md](references/form-integration.md)** - React Hook Form + Zod validation, custom form fields, error handling
 
 ### Primitives (For Reference)
-- **[shadcn-components.md](references/shadcn-components.md)** - All shadcn/ui primitives with usage examples
+- **[shadcn-components-forms.md](references/shadcn-components-forms.md)** - Button, Input, Form, Select, Checkbox, Radio, Date Picker
+- **[shadcn-components-layout.md](references/shadcn-components-layout.md)** - Card, Tabs, Dialog, Drawer, Toast, Table, Alert, Avatar
 - **[shadcn-theming.md](references/shadcn-theming.md)** - Theme configuration, CSS variables, dark mode
 - **[shadcn-accessibility.md](references/shadcn-accessibility.md)** - ARIA patterns, keyboard navigation
 
 ### Tailwind
-- **[tailwind-utilities.md](references/tailwind-utilities.md)** - Core utility classes
+- **[tailwind-utilities-layout.md](references/tailwind-utilities-layout.md)** - Layout, flexbox, grid, spacing, sizing, positioning
+- **[tailwind-utilities-visual.md](references/tailwind-utilities-visual.md)** - Typography, colors, borders, shadows, effects
 - **[tailwind-responsive.md](references/tailwind-responsive.md)** - Mobile-first breakpoints
 - **[tailwind-customization.md](references/tailwind-customization.md)** - Config and extensions
 

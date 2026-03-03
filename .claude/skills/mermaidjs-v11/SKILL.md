@@ -26,7 +26,7 @@ Create text-based diagrams using Mermaid.js v11 declarative syntax. Convert code
 - `gantt` - Project timelines
 - `journey` - User experience flows
 
-See `references/diagram-types.md` for all 24+ types with syntax.
+See `references/diagram-types-core.md` and `references/diagram-types-extended.md` for all 24+ types with syntax.
 
 ## Creating Diagrams
 
@@ -98,7 +98,7 @@ See `references/configuration.md` for complete config options, theming, and cust
 
 ## Practical Patterns
 
-Load `references/examples.md` for:
+Load `references/examples-core.md` and `references/examples-advanced.md` for:
 - Architecture diagrams
 - API documentation flows
 - Database schemas
@@ -108,8 +108,10 @@ Load `references/examples.md` for:
 
 ## Resources
 
-- `references/diagram-types.md` - Syntax for all 24+ diagram types
+- `references/diagram-types-core.md` - Flowchart, sequence, class, state, ER, Gantt syntax
+- `references/diagram-types-extended.md` - Journey, kanban, C4, architecture, pie, git graph, mindmap, etc.
 - `references/configuration.md` - Config, theming, accessibility
 - `references/cli-usage.md` - CLI commands and workflows
 - `references/integration.md` - JavaScript API and embedding
-- `references/examples.md` - Practical patterns and use cases
+- `references/examples-core.md` - Architecture, API docs, database, state machines, OOP, CI/CD examples
+- `references/examples-advanced.md` - Planning, C4, git branching, user experience, cloud infra, data viz

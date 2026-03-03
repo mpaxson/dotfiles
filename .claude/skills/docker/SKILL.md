@@ -102,4 +102,5 @@ For detailed patterns by language and CI/CD integration:
 - `references/language-patterns.md` - Node.js, Python, Go, Rust specific patterns
 - `references/cicd-integration.md` - GitHub Actions & GitLab CI caching setup
 - `references/buildkit-advanced.md` - Advanced BuildKit features (bake, secrets, SSH)
-- `references/compose.md` - Docker Compose services, volumes, networks, profiles, watch mode
+- `references/compose-services.md` - Compose file structure, services, build, networking, volumes, health checks, commands
+- `references/compose-patterns.md` - Dev patterns, override files, profiles, watch mode, environment variable priority

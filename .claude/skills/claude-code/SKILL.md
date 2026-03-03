@@ -1,3 +1,8 @@
+---
+name: claude-code
+description: Claude Code CLI tool expert. This skill should be used when working with Claude Code features, installation, setup, authentication, slash commands, hooks, plugins, MCP server integration, IDE integration, agent skills creation, CI/CD pipeline integration, enterprise features, configuration, API usage, or troubleshooting Claude Code issues.
+---
+
 # Claude Code Expert
 
 Claude Code is Anthropic's agentic coding tool that lives in the terminal and helps turn ideas into code faster. It combines autonomous planning, execution, and validation with extensibility through skills, plugins, MCP servers, and hooks.
@@ -49,10 +54,10 @@ Load these references when needed for detailed guidance:
   - Prerequisites, installation methods, authentication, first run
 
 ### Development Workflows
-- **Slash Commands**: `references/slash-commands.md`
+- **Slash Commands**: `references/slash-commands-dev.md` and `references/slash-commands-other.md`
   - Complete command catalog: /cook, /plan, /debug, /test, /fix:*, /docs:*, /git:*, /design:*, /content:*
 
-- **Agent Skills**: `references/agent-skills.md`
+- **Agent Skills**: `references/agent-skills-creating.md` and `references/agent-skills-examples.md`
   - Creating skills, skill.json format, best practices, API usage
 
 ### Integration & Extension
@@ -86,7 +91,7 @@ Load these references when needed for detailed guidance:
 - **API Reference**: `references/api-reference.md`
   - Admin API, Messages API, Files API, Models API, Skills API
 
-- **Best Practices**: `references/best-practices.md`
+- **Best Practices**: `references/best-practices-organization.md` and `references/best-practices-performance.md`
   - Project organization, security, performance, team collaboration, cost management
 
 ## Common Workflows
@@ -149,9 +154,9 @@ When responding to Claude Code questions:
 
 **For setup/installation questions:** Load `references/getting-started.md`
 
-**For slash command questions:** Load `references/slash-commands.md`
+**For slash command questions:** Load `references/slash-commands-dev.md` and `references/slash-commands-other.md`
 
-**For skill creation:** Load `references/agent-skills.md`
+**For skill creation:** Load `references/agent-skills-creating.md` and `references/agent-skills-examples.md`
 
 **For MCP questions:** Load `references/mcp-integration.md`
 
@@ -171,7 +176,7 @@ When responding to Claude Code questions:
 
 **For API usage:** Load `references/api-reference.md`
 
-**For best practices:** Load `references/best-practices.md`
+**For best practices:** Load `references/best-practices-organization.md` and `references/best-practices-performance.md`
 
 **Documentation links:**
 - Main docs: https://docs.claude.com/claude-code

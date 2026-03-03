@@ -11,3 +11,5 @@ bin/mirrorshield
 .tmux/
 .claude/stats-cache.json
 tmux-client*
+.env*
+!.env.example

@@ -79,8 +79,8 @@ zinit as"null" wait lucid from"gh-r" for \
 
 
 zinit wait lucid for \
-    atclone'golangci-lint completion zsh > _golangci-lint' \
     from'gh-r' \
+    atclone'golangci-lint completion zsh > _golangci-lint' \
     sbin'golangci-lint' \
   @golangci/golangci-lint
 
