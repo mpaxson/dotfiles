@@ -1,6 +1,6 @@
 ---
 name: argocd
-description: GitOps continuous delivery for Kubernetes with ArgoCD. Use when creating/managing ArgoCD Applications, ApplicationSets, App of Apps patterns, Helm/Kustomize deployments, sync configurations, RBAC/projects setup, notifications, health checks, or private repository configuration.
+description: GitOps continuous delivery for Kubernetes with ArgoCD. Use when creating/managing ArgoCD Applications, ApplicationSets, App of Apps patterns, Helm/Kustomize deployments, Kustomize bases/overlays/components/replacements, single source of truth patterns, multi-source Helm+kustomize sidecar apps, sync configurations, RBAC/projects setup, notifications, health checks, or private repository configuration.
 ---
 
 # ArgoCD
@@ -41,7 +41,8 @@ argocd login localhost:8080 --insecure
 
 ### Application Management
 - Create, sync, delete Applications → [references/applications.md](references/applications.md)
-- App of Apps pattern → [references/applications.md](references/applications.md)
+- App of Apps pattern (directory-based, ApplicationSet) → [references/applications.md](references/applications.md)
+- Multi-source apps (Helm + kustomize sidecar) → [references/applications.md](references/applications.md)
 
 ### Multi-Cluster & Templating
 - ApplicationSets with generators → [references/applicationsets.md](references/applicationsets.md)
@@ -49,7 +50,7 @@ argocd login localhost:8080 --insecure
 
 ### Manifest Tools
 - Helm charts, values, OCI registries → [references/helm.md](references/helm.md)
-- Kustomize overlays, patches → [references/kustomize.md](references/kustomize.md)
+- Kustomize bases, overlays, components, replacements, single source of truth, multi-source Helm+kustomize → [references/kustomize.md](references/kustomize.md)
 
 ### Sync Configuration
 - Sync waves, hooks, phases → [references/sync-options.md](references/sync-options.md)
