@@ -1,3 +1,8 @@
+---
+description: Pattern matching, regex, numeric/array/logical matchers, gjson JSON path extraction
+last_updated: 2026-03-18
+---
+
 # Goss Matchers
 
 ## Default Matching Behavior

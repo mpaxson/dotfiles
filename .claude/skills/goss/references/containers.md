@@ -1,3 +1,8 @@
+---
+description: dgoss Docker testing, kgoss Kubernetes testing, dcgoss docker-compose testing, CI/CD integration
+last_updated: 2026-03-18
+---
+
 # Goss Container Testing
 
 ## dgoss - Docker Container Testing

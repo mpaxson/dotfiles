@@ -1,3 +1,8 @@
+---
+description: Modular gossfiles, auto-generating tests, retry/wait patterns, health endpoints, common test patterns, gotchas
+last_updated: 2026-03-18
+---
+
 # Goss Patterns & Best Practices
 
 ## Modular Gossfiles

@@ -1,3 +1,8 @@
+---
+description: Go text/template with Sprig functions, variables, conditionals, loops, conditional skip
+last_updated: 2026-03-18
+---
+
 # Goss Templating
 
 Goss uses Go `text/template` with Sprig function library (~100+ functions).
