@@ -77,6 +77,23 @@ zinit as"null" wait lucid from"gh-r" for \
     sbin"rg" atclone"./rip*/rg --generate=complete-zsh > _rg" atpull"%atclone" as"completion"     @BurntSushi/ripgrep \
     sbin"**/lazygit" @jesseduffield/lazygit
 
+# kubectx & kubens (same repo, separate tarballs need bpick)
+zi wait lucid for \
+    from'gh-r' \
+    bpick'kubectx_*' \
+    sbin'kubectx' \
+    atclone'curl -sL https://raw.githubusercontent.com/ahmetb/kubectx/master/completion/_kubectx.zsh > _kubectx' \
+    atpull'%atclone' as'completion' \
+  @ahmetb/kubectx
+
+zi wait lucid for \
+    id-as'ahmetb/kubens' \
+    from'gh-r' \
+    bpick'kubens_*' \
+    sbin'kubens' \
+    atclone'curl -sL https://raw.githubusercontent.com/ahmetb/kubectx/master/completion/_kubens.zsh > _kubens' \
+    atpull'%atclone' as'completion' \
+  @ahmetb/kubectx
 
 zinit wait lucid for \
     from'gh-r' \
