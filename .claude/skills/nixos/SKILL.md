@@ -1,6 +1,6 @@
 ---
 name: nixos
-description: NixOS and Nix flake development for multi-repo architectures, airgapped deployments, and K3s infrastructure. Use when working with flake.nix files, NixOS modules, derivations, devShells, overlays, OCI image packaging, or composing multiple flake repositories. Covers Nix language syntax, flake inputs/outputs, nixosModules exports, stdenv.mkDerivation, and home-manager integration.
+description: NixOS and Nix flake development for multi-repo architectures, airgapped deployments, and K3s infrastructure. Use when working with flake.nix files, NixOS modules, derivations, devShells, overlays, OCI image packaging, building NixOS installer ISOs, or composing multiple flake repositories. Covers Nix language syntax, flake inputs/outputs, nixosModules exports, stdenv.mkDerivation, home-manager integration, ISO closure consistency, and Charmbracelet gum TUI prompts for runtime installer configuration with YAML config persistence.
 ---
 
 # NixOS Development
@@ -106,6 +106,34 @@ manifests = pkgs.runCommand "manifests" {
 '';
 ```
 
+## ISO Building & Runtime Configuration
+
+Build reproducible installer ISOs with runtime user prompts that don't affect the flake closure.
+
+**Closure rule**: Anything resolved at build time (Nix paths, `writeText`, package versions) is part of the closure. Anything resolved at runtime (user input, env vars, files read by scripts) is not.
+
+**Pattern**: Include `gum` (Charmbracelet) in ISO packages → prompt user at boot → write answers to `site-config.yaml` → apply config via activation scripts or systemd services. Same ISO works across all hosts. On upgrades, load existing YAML and pre-fill prompts with current values.
+
+```nix
+# Include in ISO module
+environment.systemPackages = with pkgs; [ gum yq-go glow ];
+```
+
+See `references/iso-building.md` for ISO configuration, closure consistency rules, and bundling flake source.
+See `references/gum-prompts.md` for Charmbracelet gum prompt patterns, YAML config persistence, and upgrade flows.
+
+## Private Git Repos (git+ssh://)
+
+Flake input fetching (`builtins.fetchGit`) runs in the **client/evaluator process** as the **calling user** — NOT the nix daemon. The daemon only handles sandboxed builds.
+
+- **Developer**: SSH just works via `~/.ssh/`
+- **sudo nixos-rebuild**: Use `--use-remote-sudo` or deploy key in `/root/.ssh/`
+- **CI runner**: Set `GIT_SSH_COMMAND` with absolute paths to SSH config/key (bypasses DynamicUser `~` resolution)
+- **Never unset `GIT_SSH_COMMAND`** in CI `before_script` — fetchGit needs it
+- **Avoid `--override-input`** on CI for production builds — `path:` inputs produce different derivation hashes than `git+ssh://`, breaking binary cache sharing
+
+See `references/private-repos.md` for full setup guide, CI runner NixOS config, and troubleshooting.
+
 ## Detailed References
 
 For comprehensive documentation on specific topics:
@@ -118,6 +146,9 @@ For comprehensive documentation on specific topics:
 | Packaging & derivations | `references/packaging.md` |
 | DevShells & overlays | `references/devshells.md` |
 | Home Manager | `references/home-manager.md` |
+| Private repos & SSH | `references/private-repos.md` |
+| ISO building & closure consistency | `references/iso-building.md` |
+| Charmbracelet gum prompts & YAML config | `references/gum-prompts.md` |
 
 ## Common Patterns
 

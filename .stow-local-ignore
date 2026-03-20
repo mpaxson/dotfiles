@@ -21,3 +21,4 @@ MakeFile
 dev
 justfile
 just/
+zinit-offline

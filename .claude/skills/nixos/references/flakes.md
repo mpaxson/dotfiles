@@ -233,6 +233,26 @@ The lock file pins exact revisions. Key fields:
 }
 ```
 
+## Private Repositories
+
+See `references/private-repos.md` for comprehensive guide. Key points:
+
+- `git+ssh://` input fetching runs as the **calling user** (not nix daemon)
+- Developer machines: SSH works via `~/.ssh/` automatically
+- CI runners: Need `GIT_SSH_COMMAND` with absolute paths to SSH config
+- `--override-input path:` produces **different derivation hashes** than `git+ssh://` — avoid on CI
+
+```nix
+inputs = {
+  # Private repo via SSH
+  myflake.url = "git+ssh://git@gitlab.example.com/group/repo.git";
+  myflake.inputs.nixpkgs.follows = "nixpkgs";
+
+  # Private repo via HTTPS + access-token
+  myflake.url = "git+https://gitlab.example.com/group/repo.git";
+};
+```
+
 ## Common Issues
 
 ### Input not found
@@ -246,3 +266,6 @@ Usually from accessing config values before they're defined. Use `lib.mkIf` for 
 
 ### Hash mismatch
 Update hash with: `nix build 2>&1 | grep 'got:' | awk '{print $2}'`
+
+### SSH "Permission denied" on CI
+fetchGit runs as the CI job user, not root. Ensure `GIT_SSH_COMMAND` is set (not unset in before_script) and points to an SSH config with the deploy key. See `references/private-repos.md`.

@@ -13,3 +13,5 @@ bin/mirrorshield
 tmux-client*
 .env*
 !.env.example
+zinit-offline.tar.gz
+zinit-offline/.pack-home

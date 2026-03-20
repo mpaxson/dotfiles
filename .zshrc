@@ -95,6 +95,15 @@ zi wait lucid for \
     atpull'%atclone' as'completion' \
   @ahmetb/kubectx
 
+zi wait lucid for \
+    id-as'kubectl' \
+    as'completion' \
+    atclone'curl -sLo kubectl "https://dl.k8s.io/release/$(curl -sL https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl" && chmod +x kubectl && ./kubectl completion zsh > _kubectl' \
+    atpull'%atclone' \
+    sbin'kubectl' \
+    nocompile \
+  zdharma-continuum/null
+
 zinit wait lucid for \
     from'gh-r' \
     atclone'golangci-lint completion zsh > _golangci-lint' \

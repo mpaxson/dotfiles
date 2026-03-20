@@ -23,20 +23,31 @@ When creating commits and pull requests:
 - Do NOT add the "Co-Authored-By: Claude" line
 - Keep commit messages and PR descriptions clean and professional
 
+## Git in Submodules and Subdirectories
+
+Use `git -C <path>` to run git commands in submodules or subdirectories. Do NOT `cd` into a directory to run git commands — `cd` causes permission and hook issues.
+
+```bash
+# CORRECT - use git -C:
+git -C automation commit -m "Fix something"
+git -C services status
+git -C just/utils log --oneline -5
+
+# INCORRECT - do NOT cd into submodule:
+cd automation && git commit -m "Fix something"
+```
+
 ## Git Worktrees
 
 When working with git worktrees, use `cd` instead of `git -C`:
 
 ```bash
-# CORRECT - cd into worktree then run git commands:
+# CORRECT for worktrees - cd then run:
 cd .worktrees/feature-branch && git log --oneline
 cd .worktrees/feature-branch && git status
-
-# INCORRECT - do NOT use git -C:
-git -C .worktrees/feature-branch log --oneline
 ```
 
-This ensures proper permission handling. The `cd <path> && <git command>` pattern is allowed and matches existing git permission rules.
+Worktrees are the exception — `cd` is required for proper worktree resolution.
 
 ## Stow Usage
 
