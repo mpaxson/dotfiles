@@ -1,7 +1,7 @@
 ---
 name: foundry-vtt
-description: "Foundry VTT virtual tabletop development, deployment, and module creation. This skill should be used when developing Foundry VTT modules or game systems, writing module.json or system.json manifests, creating ActorSheet/ItemSheet classes, using Foundry hooks (init, ready, setup, renderApplication, create/update/delete document hooks), working with TypeDataModel data schemas, building Handlebars templates for Foundry UI, using ApplicationV2 and HandlebarsApplicationMixin, registering game settings via game.settings API, creating compendium packs, deploying Foundry VTT on Kubernetes/K3s with felddy/foundryvtt Docker image or Helm charts, configuring Traefik/Nginx reverse proxy with WebSocket support for Foundry, writing Quench tests for Foundry modules, using libWrapper/socketlib libraries, integrating Svelte/Vite/TypeScript with Foundry development, packaging and distributing Foundry modules, or troubleshooting Foundry VTT API issues across v11/v12/v13."
-last_updated: 2026-03-18
+description: "Foundry VTT virtual tabletop development, deployment, and module creation. This skill should be used when developing Foundry VTT modules or game systems, writing module.json or system.json manifests, creating ActorSheet/ItemSheet classes, using Foundry hooks (init, ready, setup, renderApplication, create/update/delete document hooks), working with TypeDataModel data schemas, building Handlebars templates for Foundry UI, using ApplicationV2 and HandlebarsApplicationMixin, registering game settings via game.settings API, creating compendium packs, deploying Foundry VTT on Kubernetes/K3s with felddy/foundryvtt Docker image or Helm charts, configuring Traefik/Nginx reverse proxy with WebSocket support for Foundry, writing Quench tests for Foundry modules, using libWrapper/socketlib libraries, integrating Svelte/Vite/TypeScript with Foundry development, packaging and distributing Foundry modules, developing WFRP4e (Warhammer Fantasy Roleplay 4e) modules with game.wfrp4e API and effects triggers, adding custom species/careers/items to wfrp4e, or troubleshooting Foundry VTT API issues across v11/v12/v13."
+last_updated: 2026-03-20
 ---
 
 # Foundry VTT
@@ -95,6 +95,7 @@ Hooks.once("ready", () => {
 | `references/deployment/docker.md` | felddy/foundryvtt-docker env vars, compose, configuration |
 | `references/testing/quench.md` | Quench test framework, test batches, Mocha/Chai patterns |
 | `references/testing/ci-testing.md` | CI/CD, Jest/Vitest outside Foundry, test scenarios |
+| `references/systems/wfrp4e.md` | WFRP4e system: game.wfrp4e API, actor/item types, effects triggers, custom species, world scripts |
 
 ## Cross-References
 
