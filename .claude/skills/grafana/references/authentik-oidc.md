@@ -1,42 +1,89 @@
 # Authentik OIDC Integration for Grafana
 
-## Authentik Setup
+Two approaches: **operator-managed** (recommended) or **manual blueprint**.
 
-### 1. Create OAuth2/OIDC Provider
+## Approach 1: Authentik Operator (Recommended)
 
-In Authentik Admin UI (`/if/admin/`):
+Use the `authentik-operator` with an `OIDCClient` custom resource. The operator auto-creates the Authentik provider, application, and a K8s Secret with credentials.
 
-1. **Providers > Create > OAuth2/OIDC**
-2. Settings:
-   - Name: `Grafana`
-   - Authorization flow: `default-provider-authorization-implicit-consent`
-   - Client type: Confidential
-   - Redirect URIs (Strict): `https://grafana.home.kettle.sh/login/generic_oauth`
-   - Scopes: `openid`, `profile`, `email`
-   - Signing Key: select authentik self-signed certificate
-3. Note: Client ID and Client Secret
+### OIDCClient CR
 
-### 2. Create Application
-
-1. **Applications > Create**
-   - Name: `Grafana`
-   - Slug: `grafana`
-   - Provider: select `Grafana` provider
-   - Launch URL: `https://grafana.home.kettle.sh`
-
-### 3. Create Groups (Role Mapping)
-
-Create Authentik groups for Grafana role mapping:
-- `Grafana Admins` - full admin access
-- `Grafana Editors` - dashboard edit access
-- `Grafana Viewers` - read-only (optional, default role)
-
-Assign users to groups in Authentik Admin.
-
-## Authentik Blueprint (Declarative)
+Add to the kube-prometheus-stack Helm chart templates:
 
 ```yaml
-# ConfigMap for Authentik blueprint
+# templates/oidcclient.yaml
+apiVersion: auth.example.com/v1  # Edit: replace with your CRD group
+kind: OIDCClient
+metadata:
+  name: grafana
+spec:
+  # Application settings
+  slug: grafana
+  name: Grafana
+  # OAuth2 provider settings
+  clientId: grafana
+  redirectUris:
+    - https://grafana.{{ .Values.global.baseDomain }}/login/generic_oauth
+  launchUrl: https://grafana.{{ .Values.global.baseDomain }}
+  scopes: [openid, profile, email]
+  # Output: creates K8s Secret "grafana-oauth" with client_id, client_secret keys
+  secretName: grafana-oauth
+```
+
+The operator handles:
+
+1. Creating the OAuth2 provider in Authentik
+2. Creating the Application in Authentik
+3. Generating and storing credentials in a K8s Secret (`grafana-oauth`)
+4. Rotating credentials if needed
+
+### Grafana Helm Values (Operator)
+
+```yaml
+grafana:
+  # Admin credentials from separate secret
+  admin:
+    existingSecret: grafana-admin
+    userKey: admin-user
+    passwordKey: admin-password
+  # OIDC credentials from operator-managed secret
+  envFromSecrets:
+    - name: grafana-oauth
+      optional: true
+  grafana.ini:
+    server:
+      root_url: https://grafana.example.com  # Edit: your Grafana URL
+    auth:
+      signout_redirect_url: "https://auth.example.com/application/o/grafana/end-session/"  # Edit: your Authentik URL
+      oauth_auto_login: true
+    auth.generic_oauth:
+      enabled: true
+      name: Authentik
+      client_id: "${GF_AUTH_GENERIC_OAUTH_CLIENT_ID}"
+      client_secret: "${GF_AUTH_GENERIC_OAUTH_CLIENT_SECRET}"
+      scopes: openid profile email
+      auth_url: https://auth.example.com/application/o/authorize/  # Edit: your Authentik URL
+      token_url: https://auth.example.com/application/o/token/
+      api_url: https://auth.example.com/application/o/userinfo/
+      role_attribute_path: "contains(groups[*], 'Grafana Admins') && 'Admin' || contains(groups[*], 'Grafana Editors') && 'Editor' || 'Viewer'"
+      allow_assign_grafana_admin: true
+```
+
+The `envFromSecrets` injects the operator-managed secret as env vars. Grafana reads `${GF_AUTH_GENERIC_OAUTH_CLIENT_ID}` and `${GF_AUTH_GENERIC_OAUTH_CLIENT_SECRET}` from the secret.
+
+## Approach 2: Manual Blueprint
+
+For setups without the authentik-operator, create the provider manually.
+
+### Authentik Setup
+
+1. **Providers > Create > OAuth2/OIDC**: Name `Grafana`, client type Confidential, redirect URI `https://grafana.example.com/login/generic_oauth`, scopes `openid profile email`
+2. **Applications > Create**: Name `Grafana`, slug `grafana`, provider `Grafana`
+3. **Groups**: Create `Grafana Admins`, `Grafana Editors` for role mapping
+
+### Blueprint (Declarative)
+
+```yaml
 version: 1
 metadata:
   name: Grafana OIDC Provider
@@ -51,13 +98,12 @@ entries:
       client_type: confidential
       client_id: grafana
       client_secret: !Env [GRAFANA_OAUTH_SECRET]
-      redirect_uris: !Format ["https://%s/login/generic_oauth", !Env [GRAFANA_HOST, grafana.home.kettle.sh]]
+      redirect_uris: !Format ["https://%s/login/generic_oauth", !Env [GRAFANA_HOST, grafana.example.com]]
       signing_key: !Find [authentik_crypto.certificatekeypair, [name, authentik Self-signed Certificate]]
       property_mappings:
         - !Find [authentik_providers_oauth2.scopemapping, [scope_name, openid]]
         - !Find [authentik_providers_oauth2.scopemapping, [scope_name, profile]]
         - !Find [authentik_providers_oauth2.scopemapping, [scope_name, email]]
-
   - model: authentik_core.application
     state: present
     identifiers:
@@ -65,47 +111,21 @@ entries:
     attrs:
       name: Grafana
       provider: !KeyOf provider-grafana
-      meta_launch_url: !Format ["https://%s", !Env [GRAFANA_HOST, grafana.home.kettle.sh]]
+      meta_launch_url: !Format ["https://%s", !Env [GRAFANA_HOST, grafana.example.com]]
 ```
 
-## Grafana Helm Values
-
-Add to kube-prometheus-stack `grafana` section:
-
-```yaml
-grafana:
-  grafana.ini:
-    server:
-      root_url: https://grafana.home.kettle.sh
-    auth:
-      signout_redirect_url: "https://auth.home.kettle.sh/application/o/grafana/end-session/"
-      oauth_auto_login: true
-    auth.generic_oauth:
-      enabled: true
-      name: Authentik
-      client_id: grafana
-      client_secret: "${GRAFANA_OAUTH_SECRET}"
-      scopes: openid profile email
-      auth_url: https://auth.home.kettle.sh/application/o/authorize/
-      token_url: https://auth.home.kettle.sh/application/o/token/
-      api_url: https://auth.home.kettle.sh/application/o/userinfo/
-      role_attribute_path: "contains(groups[*], 'Grafana Admins') && 'Admin' || contains(groups[*], 'Grafana Editors') && 'Editor' || 'Viewer'"
-      allow_assign_grafana_admin: true
-  envFromSecrets:
-    - name: grafana-oauth-secret  # K8s secret with GRAFANA_OAUTH_SECRET key
-```
-
-### Secret for OAuth Client Secret
+### Manual Secret
 
 ```yaml
 apiVersion: v1
 kind: Secret
 metadata:
-  name: grafana-oauth-secret
+  name: grafana-oauth
   namespace: monitoring
 type: Opaque
 stringData:
-  GRAFANA_OAUTH_SECRET: "<client-secret-from-authentik>"
+  GF_AUTH_GENERIC_OAUTH_CLIENT_ID: "grafana"
+  GF_AUTH_GENERIC_OAUTH_CLIENT_SECRET: "<client-secret-from-authentik>"
 ```
 
 ## Role Mapping Expression

@@ -19,6 +19,41 @@ spec:
         - /metadata/annotations/kubectl.kubernetes.io~1last-applied-configuration
 ```
 
+### StatefulSet volumeClaimTemplates Perpetual OutOfSync
+
+**Cause:** Kubernetes API server strips `apiVersion` and `kind` from `volumeClaimTemplates` entries (they're implicit from the parent field type). The source manifest has `apiVersion: v1` and `kind: PersistentVolumeClaim`, but the live object doesn't — ArgoCD sees a diff.
+
+**Diff looks like:**
+```
+-  - apiVersion: v1
+-    kind: PersistentVolumeClaim
+-    metadata:
++  - metadata:
+```
+
+**Solution — Global ignore via Helm values (recommended):**
+```yaml
+configs:
+  cm:
+    resource.customizations.ignoreDifferences.apps_StatefulSet: |
+      jqPathExpressions:
+        - .spec.volumeClaimTemplates[]?.apiVersion
+        - .spec.volumeClaimTemplates[]?.kind
+```
+
+**Solution — Per-Application:**
+```yaml
+spec:
+  ignoreDifferences:
+    - group: apps
+      kind: StatefulSet
+      jqPathExpressions:
+        - .spec.volumeClaimTemplates[]?.apiVersion
+        - .spec.volumeClaimTemplates[]?.kind
+```
+
+**Note:** Using `jqPathExpressions` (not `jsonPointers`) because the VCT array index varies and jq handles the wildcard naturally with `[]?`.
+
 ### Stuck in Progressing
 
 **Common causes:**

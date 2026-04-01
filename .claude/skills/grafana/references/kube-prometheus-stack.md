@@ -70,7 +70,7 @@ spec:
                     resources:
                       requests:
                         storage: 5Gi
-    - repoURL: git@github.com:kettleofketchup/home.git
+    - repoURL: git@github.com:org/infra.git  # Edit: replace with your repo URL
       targetRevision: HEAD
       path: apps/monitoring
   destination:

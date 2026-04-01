@@ -1,6 +1,6 @@
 ---
 name: mkdocs-documentation
-description: MkDocs Material documentation management. This skill should be used when writing, formatting, or validating documentation in docs/. Covers admonitions, Mermaid diagrams, code blocks with annotations, content tabs, navigation setup, and mkdocs testing. Always check project-specific docs at docs/dev/ai/skills/ and docs/dev/ai/agents/ for project-specific Claude skill and Claude agent documentation when available.
+description: MkDocs Material documentation management. This skill should be used when writing, formatting, or validating documentation in docs/. Covers admonitions, Mermaid diagrams, code blocks with annotations, content tabs, navigation setup, include-markdown for reusable content, _includes pattern for shared diagrams, and mkdocs testing. Always check project-specific docs at docs/dev/ai/skills/ and docs/dev/ai/agents/ for project-specific Claude skill and Claude agent documentation when available.
 ---
 
 # MkDocs Material Documentation
@@ -24,7 +24,22 @@ These take precedence over general patterns.
 | Syntax highlighting | [code-blocks.md](references/code-blocks.md) |
 | Multi-option examples | [content-tabs.md](references/content-tabs.md) |
 | Links, nav structure | [navigation.md](references/navigation.md) |
+| Reusable content includes | [includes.md](references/includes.md) |
 | Build, validate | [testing.md](references/testing.md) |
+
+## Diagram Rules
+
+**REQUIRED SUB-SKILL:** Use `mermaidjs-v11` for all Mermaid diagram creation.
+
+Diagrams with more than **15 nodes or lines** must be split:
+
+1. Create a **top-level overview** showing high-level blocks only
+2. Create **per-component deep-dives** with internal details
+3. Store each diagram in `docs/architecture/_includes/` as a separate `.md` file
+4. Reference from pages using `{% include-markdown %}` directives
+5. Add `hide: true` to `_includes/.pages` to exclude from navigation
+
+See [includes.md](references/includes.md) for the full pattern.
 
 ## Common Patterns
 
@@ -39,7 +54,7 @@ These take precedence over general patterns.
     ```
 ```
 
-### Tabbed Installation
+### Tabbed Content
 
 ````markdown
 === "pip"
@@ -48,51 +63,46 @@ These take precedence over general patterns.
     pip install package
     ```
 
-=== "poetry"
+=== "uv"
 
     ```bash
-    poetry add package
+    uv add package
     ```
 ````
 
-### Feature Documentation
-
-```markdown
-## Feature Name
-
-!!! info "Requirements"
-    List prerequisites here.
-
-### Configuration
-
-```yaml
-setting: value
-```
-
-### Usage
-
-Description with examples.
-
-!!! warning
-    Important caveats.
-```
-
 ## Workflow
 
-1. **Write content** - Use references for formatting syntax
-2. **Preview** - `mkdocs serve` for live reload
-3. **Validate** - `mkdocs build --strict` catches issues
-4. **Document Claude features** - Update `docs/dev/ai/skills/` or `docs/dev/ai/agents/` if adding project-specific Claude skills or agents
+1. **Write content** — use references for formatting syntax
+2. **Diagrams** — invoke `mermaidjs-v11` skill, split large diagrams into `_includes/`
+3. **Preview** — `uv run mkdocs serve` for live reload
+4. **Validate** — `uv run mkdocs build --strict` catches issues
 
 ## Validation Commands
 
 ```bash
 # Dev server with live reload
-mkdocs serve
+uv run mkdocs serve
 
 # Strict build (CI validation)
-mkdocs build --strict
+uv run mkdocs build --strict
 
 # Quick dirty reload during editing
-mkdocs serve --dirty
+uv run mkdocs serve --dirty
 ```
+
+## Dependencies
+
+Managed via `pyproject.toml` + `uv sync`:
+
+```toml
+[project]
+dependencies = [
+    "mkdocs-material",
+    "mkdocs-awesome-nav",
+    "mkdocs-glightbox",
+    "mkdocs-macros-plugin",
+    "mkdocs-include-markdown-plugin",
+]
+```
+
+Dockerfile uses `uv` from `ghcr.io/astral-sh/uv:0.11.0`.

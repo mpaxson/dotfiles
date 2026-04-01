@@ -131,17 +131,4 @@ spec:
 
 ## Environment Variables
 
-Set via `authentik.env` in Helm values or container env:
-
-| Variable | Description |
-|----------|-------------|
-| `AUTHENTIK_SECRET_KEY` | Encryption key (required) |
-| `AUTHENTIK_POSTGRESQL__HOST` | PostgreSQL host |
-| `AUTHENTIK_POSTGRESQL__NAME` | Database name (default: `authentik`) |
-| `AUTHENTIK_POSTGRESQL__USER` | Database user (default: `authentik`) |
-| `AUTHENTIK_POSTGRESQL__PASSWORD` | Database password |
-| `AUTHENTIK_REDIS__HOST` | Redis host |
-| `AUTHENTIK_EMAIL__HOST` | SMTP host |
-| `AUTHENTIK_EMAIL__PORT` | SMTP port |
-| `AUTHENTIK_EMAIL__FROM` | From address |
-| `AUTHENTIK_LOG_LEVEL` | Log level (debug/info/warning/error) |
+For the complete environment variable reference (PostgreSQL, Redis, email, storage, web/worker tuning, cache, listen addresses, airgapped settings), see [configuration.md](configuration.md).

@@ -2,6 +2,14 @@
 
 All models use `app_label.modelname` notation in blueprint `model` field.
 
+## Brands
+
+| Model | Key Fields |
+|-------|------------|
+| `authentik_brands.brand` | domain, default, branding_title, branding_logo, branding_favicon, branding_custom_css, branding_default_flow_background, flow_authentication, flow_invalidation, flow_recovery, flow_unenrollment, flow_user_settings, flow_device_code, default_application, web_certificate, client_certificates, attributes |
+
+Default brand: `!Find [authentik_brands.brand, [domain, .]]`
+
 ## Core
 
 | Model | Key Fields |

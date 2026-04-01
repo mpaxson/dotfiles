@@ -1,77 +1,14 @@
 # Application Integrations
 
-## ArgoCD (OIDC via Dex)
+Per-app integration guides in `references/integrations/`:
 
-ArgoCD uses OIDC through its built-in Dex connector (enables both UI and CLI auth).
-
-### Authentik Setup
-1. Create **OAuth2/OIDC Provider**
-2. Redirect URIs (Strict):
-   - `https://argocd.example.com/api/dex/callback`
-   - `https://localhost:8085/auth/callback`
-3. Select signing key
-4. Note: Client ID, Client Secret, Application Slug
-
-### Authentik Groups
-- `ArgoCD Admins` → maps to `role:admin`
-- `ArgoCD Viewers` → maps to `role:readonly`
-
-### ArgoCD Configuration
-
-`argocd-secret` (add to `data`):
-```yaml
-dex.authentik.clientSecret: <base64-encoded-client-secret>
-```
-
-`argocd-cm` ConfigMap:
-```yaml
-dex.config: |
-  connectors:
-  - config:
-      issuer: https://auth.example.com/application/o/<app-slug>/
-      clientID: <client-id>
-      clientSecret: $dex.authentik.clientSecret
-      insecureEnableGroups: true
-      scopes:
-        - openid
-        - profile
-        - email
-    name: authentik
-    type: oidc
-    id: authentik
-```
-
-`argocd-rbac-cm` ConfigMap:
-```yaml
-policy.csv: |
-  g, ArgoCD Admins, role:admin
-  g, ArgoCD Viewers, role:readonly
-```
-
-### Helm Values (argo-cd chart)
-
-```yaml
-configs:
-  secret:
-    extra:
-      dex.authentik.clientSecret: "<client-secret>"
-  cm:
-    dex.config: |
-      connectors:
-      - config:
-          issuer: https://auth.example.com/application/o/<app-slug>/
-          clientID: <client-id>
-          clientSecret: $dex.authentik.clientSecret
-          insecureEnableGroups: true
-          scopes: [openid, profile, email]
-        name: authentik
-        type: oidc
-        id: authentik
-  rbac:
-    policy.csv: |
-      g, ArgoCD Admins, role:admin
-      g, ArgoCD Viewers, role:readonly
-```
+| App | Auth Type | File |
+|-----|-----------|------|
+| ArgoCD | SAML via Dex | [integrations/argocd.md](integrations/argocd.md) |
+| Grafana | OAuth2/OIDC | Below |
+| Gitea | OAuth2/OIDC | Below |
+| MinIO | OpenID Connect | Below |
+| Generic SAML | SAML | Below |
 
 ---
 
@@ -142,8 +79,6 @@ MINIO_IDENTITY_OPENID_CLAIM_NAME=policy
 
 ## Generic SAML App Template
 
-For apps supporting SAML but without specific integration docs:
-
 ### Authentik SAML Provider
 | Setting | Value |
 |---------|-------|
@@ -154,28 +89,25 @@ For apps supporting SAML but without specific integration docs:
 | Signing Certificate | authentik Self-signed Certificate |
 
 ### App Configuration
-Provide to the app:
-- IdP Metadata URL: `https://auth.example.com/application/saml/<slug>/metadata/`
-- IdP SSO URL: `https://auth.example.com/application/saml/<slug>/sso/binding/redirect/`
+- IdP SSO URL: `https://auth.example.com/application/saml/<slug>/sso/binding/post/`
 - IdP Certificate: download from authentik admin
 - IdP Entity ID: `https://auth.example.com`
+
+**Always use `/sso/binding/post/`** — the redirect binding is NOT csrf_exempt.
 
 ### Blueprint Pattern
 ```yaml
 - model: authentik_providers_saml.samlprovider
-  state: present
   identifiers:
     name: <app>-saml
   id: provider-<app>
   attrs:
     authorization_flow: !Find [authentik_flows.flow, [slug, default-provider-authorization-implicit-consent]]
     acs_url: https://<app>.example.com/<saml-callback>
-    issuer: !Format ["https://%s", !Env [AUTHENTIK_HOST]]
+    issuer: https://auth.example.com
     sp_binding: post
     signing_kp: !Find [authentik_crypto.certificatekeypair, [name, authentik Self-signed Certificate]]
-
 - model: authentik_core.application
-  state: present
   identifiers:
     slug: <app>
   attrs:

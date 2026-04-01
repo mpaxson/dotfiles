@@ -1,5 +1,7 @@
 # Mermaid Diagrams
 
+**REQUIRED SUB-SKILL:** Use `mermaidjs-v11` for all diagram creation — it has comprehensive syntax, styling, and diagram type coverage.
+
 ## Configuration
 
 ```yaml
@@ -12,83 +14,51 @@ markdown_extensions:
           format: !!python/name:pymdownx.superfences.fence_code_format
 ```
 
-## Syntax
+## Diagram Size Rules
 
-All diagrams use mermaid code fence:
+**Max 15 lines/nodes per diagram.** Larger diagrams must be split:
 
-````markdown
-```mermaid
-[diagram code]
-```
-````
+1. **Overview diagram** — 5-7 top-level blocks, no internals, use `style` for color
+2. **Deep-dive diagrams** — one per component, show internal structure
+3. Store split diagrams in `docs/architecture/_includes/`
+4. Reference via `{% include-markdown %}` (see [includes.md](includes.md))
 
-## Flowcharts
-
-```mermaid
-graph LR
-    A[Start] --> B{Decision}
-    B -->|Yes| C[Action 1]
-    B -->|No| D[Action 2]
-    C --> E[End]
-    D --> E
-```
-
-**Direction:** `TB` (top-bottom), `BT`, `LR` (left-right), `RL`
-
-**Node shapes:**
-- `[text]` - rectangle
-- `(text)` - rounded
-- `{text}` - diamond
-- `((text))` - circle
-
-## Sequence Diagrams
+### Good: Focused Overview
 
 ```mermaid
-sequenceDiagram
-    participant A as Alice
-    participant B as Bob
-    A->>B: Hello
-    B-->>A: Hi back
-    A->>B: How are you?
-    Note over A,B: Conversation
+flowchart TB
+    user["User"] --> traefik["Traefik"]
+    traefik --> app["App"]
+    app --> db["Database"]
+    style app fill:#4a9eff,color:#fff
 ```
 
-**Arrows:** `->>` solid, `-->>` dashed, `-x` cross end
+### Bad: Everything in One Diagram
 
-## State Diagrams
+Do NOT create diagrams with 20+ nodes, multiple subgraphs with internal details, and cross-cutting edges all in one block. Split into overview + deep-dives.
 
+## Quick Syntax
+
+**Direction:** `TB` (top-bottom), `LR` (left-right), `BT`, `RL`
+
+**Nodes:** `[rect]` `(rounded)` `{diamond}` `((circle))`
+
+**Edges:** `-->` solid, `-.->` dashed, `==>` thick, `-->|"label"|` labeled
+
+**Subgraphs:**
 ```mermaid
-stateDiagram-v2
-    [*] --> Idle
-    Idle --> Running: start
-    Running --> Idle: stop
-    Running --> [*]: finish
+flowchart TB
+    subgraph ns["namespace"]
+        pod["Pod"]
+        svc["Service"]
+    end
 ```
 
-## Class Diagrams
-
-```mermaid
-classDiagram
-    Animal <|-- Duck
-    Animal <|-- Fish
-    Animal: +int age
-    Animal: +move()
-    Duck: +swim()
+**Styling:**
+```
+style nodeName fill:#hex,color:#fff
 ```
 
-## Entity-Relationship
+## Diagram Types
 
-```mermaid
-erDiagram
-    USER ||--o{ POST : creates
-    USER {
-        int id
-        string name
-    }
-    POST {
-        int id
-        string title
-    }
-```
-
-**Relationships:** `||` one, `o{` many, `|{` one-or-more
+For comprehensive syntax on all 24+ diagram types (flowcharts, sequence, state, ER, Gantt, timeline, architecture), invoke the `mermaidjs-v11` skill.
