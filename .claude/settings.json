@@ -107,7 +107,8 @@
     "full-stack-orchestration@claude-code-workflows": true,
     "gopls-lsp@claude-plugins-official": true,
     "superpowers@claude-plugins-official": true,
-    "just-interceptor@claude-just-interceptor": true
+    "just-interceptor@claude-just-interceptor": true,
+    "frontend-design@claude-plugins-official": true
   },
   "effortLevel": "high"
 }
