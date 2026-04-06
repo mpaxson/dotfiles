@@ -1,0 +1,32 @@
+{
+  "version": 3,
+  "skills": {
+    "shadcn": {
+      "source": "shadcn/ui",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/shadcn/ui.git",
+      "skillPath": "skills/shadcn/SKILL.md",
+      "skillFolderHash": "bf9e83da91320f445f2c27f65067009f344f757a",
+      "installedAt": "2026-04-06T10:36:42.562Z",
+      "updatedAt": "2026-04-06T10:36:42.562Z"
+    }
+  },
+  "dismissed": {
+    "findSkillsPrompt": true
+  },
+  "lastSelectedAgents": [
+    "amp",
+    "antigravity",
+    "cline",
+    "codex",
+    "cursor",
+    "deepagents",
+    "firebender",
+    "gemini-cli",
+    "github-copilot",
+    "kimi-cli",
+    "opencode",
+    "warp",
+    "claude-code"
+  ]
+}
