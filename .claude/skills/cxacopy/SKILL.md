@@ -111,8 +111,31 @@ the login/push — see `references/s3-sync-ci.md`.
 - For working **on** the appliance itself (the copyparty flake, push/pull roles,
   darknet pull side, deploys), use the **cxacopy-infra** skill.
 
-## Distribution
+## Distribution & updating
 Published as a zip at `https://copy.graynet.lan/cxa/skills/cxacopy/cxacopy.zip` by
-the `docs-publish-skill` CI job whenever `.claude/skills/cxacopy/` changes. copyparty
-**auto-renames on collision**, so the job does **DELETE then PUT** to keep one
-canonical file (PUT alone would leave `cxacopy.zip-<ts>_.zip` dupes).
+the `docs-publish-skill` CI job (runs `just docs::publish-skill`) whenever
+`.claude/skills/cxacopy/` changes on `main`. copyparty **auto-renames on
+collision**, so the job does **DELETE then PUT** to keep one canonical file
+(PUT alone would leave `cxacopy.zip-<ts>_.zip` dupes).
+
+**Last-updated stamp.** The skill isn't versioned — the publish job just writes a
+`LAST_UPDATED` file into the zip recording the UTC publish time + source commit,
+so you can tell how fresh your copy is:
+```bash
+cat ~/.claude/skills/cxacopy/LAST_UPDATED   # updated / commit / source
+```
+
+**Update your local copy — re-grab the zip.** When the skill is republished, pull
+the latest zip and unpack it over your skills dir. `unzip -o` overwrites in place;
+the zip's top-level folder is `cxacopy/`, so extracting into `~/.claude/skills/`
+lands files exactly where the skill lives (the bundled scripts are always run as
+`python3 scripts/…`, so their exec bit doesn't matter):
+```bash
+curl -sk -u admin:admin -o /tmp/cxacopy.zip \
+  https://copy.graynet.lan/cxa/skills/cxacopy/cxacopy.zip
+unzip -o /tmp/cxacopy.zip -d ~/.claude/skills/    # extracts cxacopy/ in place
+cat ~/.claude/skills/cxacopy/LAST_UPDATED         # confirm the fresh copy
+```
+(On graynet the internal CA is trusted, so `-k` is belt-and-suspenders; off
+graynet it's required.) If your `~/.claude/skills/cxacopy` symlinks into a
+dotfiles repo, the unzip updates that checkout in place — commit it there.
